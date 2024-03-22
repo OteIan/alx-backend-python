@@ -12,5 +12,5 @@ async def async_generator():
     """
     for _ in range(10):
         await asyncio.sleep(1)
-        time: float = random.random() * 10
+        time: float = random.uniform(0, 10)
         yield time
