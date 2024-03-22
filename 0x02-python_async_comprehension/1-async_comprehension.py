@@ -12,8 +12,4 @@ async def async_comprehension() -> List[float]:
     """
     Async comprehensions
     """
-    result: List[float] = []
-    async for num in async_generator():
-        result.append(num)
-
-    return result
+    return [num async for num in async_generator()]
