@@ -4,9 +4,9 @@ Async Generator
 """
 import random
 import asyncio
+from typing import AsyncGenerator
 
-
-async def async_generator():
+async def async_generator() -> AsyncGenerator[float, None]:
     """
     Yields a random number btwn 1 & 10
     """
