@@ -3,7 +3,7 @@
 Test module for utils module
 """
 import unittest
-import utils
+from unittest.mock import patch, Mock
 from parameterized import parameterized
 from typing import (
     Mapping,
@@ -13,6 +13,7 @@ from typing import (
     Callable,
     Union
 )
+from utils import access_nested_map, get_json, memoize
 
 
 class TestAccessNestedMap(unittest.TestCase):
@@ -31,7 +32,7 @@ class TestAccessNestedMap(unittest.TestCase):
             result: Union[Dict, int]
             ) -> None:
         """Test utils.access_nested_map"""
-        self.assertEqual(utils.access_nested_map(nested_map, path), result)
+        self.assertEqual(access_nested_map(nested_map, path), result)
 
     @parameterized.expand([
         ({}, ("a",), KeyError),
@@ -45,4 +46,27 @@ class TestAccessNestedMap(unittest.TestCase):
             ) -> None:
         """ Test for exceptions """
         with self.assertRaises(err):
-            utils.access_nested_map(nested_map, path)
+            access_nested_map(nested_map, path)
+
+
+class TestGetJson(unittest.TestCase):
+    """
+    Class for get_json
+    """
+
+    @parameterized.expand([
+        ("http://example.com", {"payload": True}),
+        ("http://holberton.io", {"payload": False})
+    ])
+    def test_get_json(
+            self,
+            test_url: str,
+            test_payload: Dict
+            ) -> None:
+        """
+        Mock HTTP calls
+        """
+        attrs = {'json.return_value': test_payload}
+        with patch("requests.get", return_value=Mock(**attrs)) as req:
+            self.assertEqual(get_json(test_url), test_payload)
+            req.assert_called_once_with(test_url)
